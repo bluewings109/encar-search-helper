@@ -3,6 +3,7 @@
   const { api, render, filter, mileage } = window.EncarHelper;
   const CARID_RE = /[?&]carid=(\d+)/;
   const cards = new Map(); // anchor -> { listId, cardRoot, extras }
+  const processedListIds = new Set(); // 일반등록 표는 매물 하나당 <a carid=...>가 두 개라 중복 방지
 
   function extractListId(anchor) {
     const href = anchor.getAttribute("href") || "";
@@ -10,8 +11,12 @@
     return match ? match[1] : null;
   }
 
-  function findInsertionPoint(anchor) {
-    return anchor.querySelector(".detail") || anchor;
+  function findCardRoot(anchor) {
+    return anchor.closest("tr") || anchor.closest("li") || anchor;
+  }
+
+  function findInsertionPoint(anchor, cardRoot) {
+    return anchor.querySelector(".detail") || cardRoot.querySelector(".detail") || anchor;
   }
 
   function applyVisibility(anchor) {
@@ -23,7 +28,7 @@
 
   async function hydrateCard(anchor, listId) {
     const card = cards.get(anchor);
-    const mount = findInsertionPoint(anchor);
+    const mount = findInsertionPoint(anchor, card.cardRoot);
     const loading = render.renderLoading();
     mount.appendChild(loading);
 
@@ -52,9 +57,14 @@
     if (cards.has(anchor)) return;
     const listId = extractListId(anchor);
     if (!listId) return;
-    const cardRoot = anchor.closest("li") || anchor;
+    // 일반등록 표는 매물 하나(<tr>)에 carid를 가진 <a>가 두 개(썸네일용/텍스트용) 있어
+    // 뱃지가 중복 삽입되지 않도록 같은 listId는 한 번만 처리한다.
+    if (processedListIds.has(listId)) return;
+    processedListIds.add(listId);
+
+    const cardRoot = findCardRoot(anchor);
     cards.set(anchor, { listId, cardRoot, extras: undefined });
-    mileage.render(anchor);
+    mileage.render(anchor, cardRoot);
     observeVisibility(anchor, listId);
   }
 

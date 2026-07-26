@@ -42,9 +42,14 @@ window.EncarHelper = window.EncarHelper || {};
 
   // 기존 "yer · km · 연료 · 지역" 한 줄 안에 인라인으로 끼워 넣으면 그 줄의 폭 제약 때문에
   // 잘리거나 눈에 띄지 않을 수 있어, 사고이력 뱃지들과 같은 방식(자체 flex 줄)으로 표시한다.
-  function render(anchor) {
-    const mount = anchor.querySelector(".detail") || anchor;
-    if (mount.querySelector(".eh-mileage-badges")) return;
+  //
+  // 사진형 카드는 .detail이 <a> 안에 있지만, 일반등록 표 형태는 .detail이 <a>의 형제
+  // 요소(같은 <tr> 안)로 떨어져 있어 anchor 내부 검색만으로는 못 찾는다. cardRoot(보통
+  // <tr> 또는 <li>)까지 넓혀서 찾는다.
+  function render(anchor, cardRoot) {
+    const root = cardRoot || anchor;
+    const mount = anchor.querySelector(".detail") || root.querySelector(".detail");
+    if (!mount || mount.querySelector(".eh-mileage-badges")) return;
 
     const yerEl = mount.querySelector(".yer");
     if (!yerEl) return;
