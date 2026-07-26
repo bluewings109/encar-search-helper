@@ -40,11 +40,12 @@ window.EncarHelper = window.EncarHelper || {};
   }
 
   /**
-   * 신차대비 감가율을 계산한다. 신차가 = 차량 기본가(category.originPrice) + 선택
-   * 옵션가 합계, 감가율 = (신차가 - 현재 판매가) / 신차가 * 100. 기본가나 판매가가
-   * 없으면(수입차 등 시세표 미매칭) 계산할 수 없어 null을 반환한다.
+   * 신차가 대비 현재 판매가 비율을 계산한다. 신차가 = 차량 기본가(category.originPrice)
+   * + 선택 옵션가 합계, 비율 = 현재 판매가 / 신차가 * 100 (예: 87.9% = "신차가의
+   * 87.9% 가격"). 기본가나 판매가가 없으면(수입차 등 시세표 미매칭) 계산할 수 없어
+   * null을 반환한다.
    */
-  function calcDepreciationRate(vehicle, optionCatalog) {
+  function calcNewPriceRatio(vehicle, optionCatalog) {
     const originPrice = vehicle.category ? vehicle.category.originPrice : null;
     const currentPrice = vehicle.advertisement ? vehicle.advertisement.price : null;
     if (!originPrice || currentPrice === null || currentPrice === undefined) return null;
@@ -58,7 +59,7 @@ window.EncarHelper = window.EncarHelper || {};
 
     const fullNewPrice = originPrice + optionsTotal;
     if (fullNewPrice <= 0) return null;
-    return Math.round(((fullNewPrice - currentPrice) / fullNewPrice) * 1000) / 10;
+    return Math.round((currentPrice / fullNewPrice) * 1000) / 10;
   }
 
   async function fetchVehicleExtras(listId) {
@@ -104,7 +105,7 @@ window.EncarHelper = window.EncarHelper || {};
       otherAccidentCost: record ? record.otherAccidentCost : null,
       ownerChangeCount: record ? record.ownerChangeCnt : null,
       notJoinPeriods,
-      depreciationRate: calcDepreciationRate(vehicle, optionCatalog),
+      newPriceRatio: calcNewPriceRatio(vehicle, optionCatalog),
     };
   }
 

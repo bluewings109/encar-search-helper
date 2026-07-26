@@ -55,9 +55,10 @@ window.EncarHelper = window.EncarHelper || {};
     return span;
   }
 
-  function depreciationBadge(rate) {
-    const state = rate === null || rate === undefined ? "unknown" : "info";
-    const text = rate === null || rate === undefined ? "정보없음" : `${rate}%`;
+  /** ratio: 신차가 대비 현재 판매가 비율(%). 예: 87.9 -> "신차대비 87.9%" (신차가의 87.9% 가격) */
+  function newPriceRatioBadge(ratio) {
+    const state = ratio === null || ratio === undefined ? "unknown" : "info";
+    const text = ratio === null || ratio === undefined ? "정보없음" : `${ratio}%`;
     const span = document.createElement("span");
     span.className = `eh-badge eh-badge--${state}`;
     span.textContent = `신차대비 ${text}`;
@@ -75,7 +76,7 @@ window.EncarHelper = window.EncarHelper || {};
       countCostBadge("타차가해", extras.otherAccidentCount, extras.otherAccidentCost),
       countBadge("소유자변경", extras.ownerChangeCount),
       notJoinPeriodBadge(extras.notJoinPeriods),
-      depreciationBadge(extras.depreciationRate)
+      newPriceRatioBadge(extras.newPriceRatio)
     );
     return container;
   }
