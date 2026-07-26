@@ -98,3 +98,11 @@
   cursor: pointer;
   white-space: nowrap;
 }
+
+.eh-filter-range-input {
+  width: 56px;
+  padding: 2px 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+}
