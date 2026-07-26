@@ -40,6 +40,21 @@ window.EncarHelper = window.EncarHelper || {};
     return span;
   }
 
+  /** "202204~202407" -> "2022.04~2024.07" */
+  function formatPeriod(period) {
+    return period.replace(/(\d{4})(\d{2})/g, "$1.$2");
+  }
+
+  function notJoinPeriodBadge(periods) {
+    const state = periods === null ? "unknown" : periods.length > 0 ? "yes" : "no";
+    const text =
+      periods === null ? "정보없음" : periods.length > 0 ? periods.map(formatPeriod).join(", ") : "없음";
+    const span = document.createElement("span");
+    span.className = `eh-badge eh-badge--${state}`;
+    span.textContent = `정보제공 불가능기간 ${text}`;
+    return span;
+  }
+
   function buildBadgeContainer(extras) {
     const container = document.createElement("span");
     container.className = "eh-badges";
@@ -49,7 +64,8 @@ window.EncarHelper = window.EncarHelper || {};
       yesNoBadge("단순수리", extras.hasSimpleRepair),
       countCostBadge("내차피해", extras.myAccidentCount, extras.myAccidentCost),
       countCostBadge("타차가해", extras.otherAccidentCount, extras.otherAccidentCost),
-      countBadge("소유자변경", extras.ownerChangeCount)
+      countBadge("소유자변경", extras.ownerChangeCount),
+      notJoinPeriodBadge(extras.notJoinPeriods)
     );
     return container;
   }

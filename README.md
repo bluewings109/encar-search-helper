@@ -8,6 +8,7 @@
 - 보험사고이력(내차피해) — 횟수 / 금액
 - 보험사고이력(타차가해) — 횟수 / 금액
 - 소유자변경 횟수
+- 보험이력 정보제공 불가능기간 유무 및 기간
 
 ![매물 목록에 표시된 뱃지와 필터 패널](docs/screenshot.png)
 
@@ -21,9 +22,11 @@
 
 1. `GET https://api.encar.com/v1/readside/vehicle/{listId}` — 목록의 매물 ID를 실제 `vehicleId`/`vehicleNo`로 변환
 2. `GET https://api.encar.com/v1/readside/inspection/vehicle/{vehicleId}` — 성능점검기록부(`accdient`, `simpleRepair`, `usageChangeTypes`)
-3. `GET https://api.encar.com/v1/readside/record/vehicle/{vehicleId}/open` — 보험 사고이력(`myAccidentCnt/Cost`, `otherAccidentCnt/Cost`, `carInfoUse1s`/`carInfoUse2s`)
+3. `GET https://api.encar.com/v1/readside/record/vehicle/{vehicleId}/open` — 보험 사고이력(`myAccidentCnt/Cost`, `otherAccidentCnt/Cost`, `carInfoUse1s`/`carInfoUse2s`, `notJoinDate1~5`)
 
 용도변경이력은 성능점검기록부의 `usageChangeTypes`뿐 아니라 보험이력의 용도 코드 이력(`carInfoUse1s`/`carInfoUse2s`)에 서로 다른 값이 남아 있는 경우(예: 렌트용 → 자가용)도 함께 반영합니다. 실제 상세페이지의 "차량이력 · 특이 사항: 렌트 이력" 표시는 후자로만 확인되는 경우가 있기 때문입니다.
+
+보험이력 "정보제공 불가능기간"은 `notJoinDate1`~`notJoinDate5`(예: `202301~202605`)를 모아 표시합니다. 이 기간에는 보험사에 정보 제공이 되지 않아 사고이력을 조회할 수 없다는 뜻으로, "사고이력 없음"과는 다른 의미이므로 별도 뱃지로 분리했습니다.
 
 이 API들은 `Access-Control-Allow-Origin: *`를 응답하므로 별도 인증이나 백엔드 없이 콘텐츠 스크립트에서 바로 호출할 수 있습니다.
 

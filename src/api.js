@@ -63,6 +63,14 @@ window.EncarHelper = window.EncarHelper || {};
     const usageChangedByRecord =
       !!record && (hasVariance(record.carInfoUse1s) || hasVariance(record.carInfoUse2s));
 
+    // 보험이력 정보제공 불가능기간(notJoinDate1~5): 보험사에 정보 제공 미동의 등으로
+    // 해당 기간의 사고이력을 조회할 수 없다는 뜻이라 사고이력 "없음"과는 다른 의미다.
+    const notJoinPeriods = record
+      ? [record.notJoinDate1, record.notJoinDate2, record.notJoinDate3, record.notJoinDate4, record.notJoinDate5].filter(
+          Boolean
+        )
+      : null;
+
     return {
       hasUsageChange: !master && !record ? null : usageChangedByInspection || usageChangedByRecord,
       hasAccident: master ? Boolean(master.accdient) : null,
@@ -72,6 +80,7 @@ window.EncarHelper = window.EncarHelper || {};
       otherAccidentCount: record ? record.otherAccidentCnt : null,
       otherAccidentCost: record ? record.otherAccidentCost : null,
       ownerChangeCount: record ? record.ownerChangeCnt : null,
+      notJoinPeriods,
     };
   }
 
