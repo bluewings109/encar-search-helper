@@ -40,3 +40,32 @@
   background: #f2f2f2;
   color: #888;
 }
+
+.eh-filter-panel {
+  position: fixed;
+  top: 96px;
+  right: 16px;
+  z-index: 9999;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #333;
+}
+
+.eh-filter-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+.eh-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  cursor: pointer;
+  white-space: nowrap;
+}

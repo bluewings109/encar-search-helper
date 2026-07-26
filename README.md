@@ -9,6 +9,8 @@
 - 보험사고이력(타차가해) — 횟수 / 금액
 - 소유자변경 횟수
 
+또한 화면 우측에 **용도변경이력 필터 패널**을 제공해, 용도변경이력이 "있음/없음/정보없음"인 매물을 선택적으로 숨기거나 보이게 할 수 있습니다. 설정은 브라우저에 저장되어 다음 방문에도 유지됩니다.
+
 ## 동작 원리
 
 엔카 웹사이트가 내부적으로 사용하는 공개 API를 활용합니다.
@@ -20,6 +22,8 @@
 이 API들은 `Access-Control-Allow-Origin: *`를 응답하므로 별도 인증이나 백엔드 없이 콘텐츠 스크립트에서 바로 호출할 수 있습니다.
 
 목록에 보이는 카드만 `IntersectionObserver`로 감지해 필요한 만큼만 요청하고, 같은 세션 내에서는 캐시해 중복 요청을 방지합니다. 동시 요청 수는 4개로 제한합니다.
+
+필터 패널에서 표시 조건을 변경하면, 아직 조회하지 않은 카드는 즉시 조회하고(스크롤을 기다리지 않음) 이미 조회한 카드는 즉시 표시/숨김을 다시 적용합니다. 필터 설정은 `localStorage`(`eh-usage-change-filter` 키)에 저장됩니다.
 
 ## 설치 (개발자 모드)
 
@@ -34,8 +38,9 @@
 manifest.json       확장 프로그램 설정 (Manifest V3)
 src/api.js           엔카 API 호출, 동시성 제한, 세션 캐시
 src/render.js         뱃지 DOM 생성
-src/content.js        카드 탐색, 지연 로딩(IntersectionObserver), DOM 변경 감지(MutationObserver)
-src/content.css        뱃지 스타일
+src/filter.js          용도변경이력 필터 패널 UI 및 설정 저장/알림
+src/content.js        카드 탐색, 지연 로딩(IntersectionObserver), 필터 적용, DOM 변경 감지(MutationObserver)
+src/content.css        뱃지 및 필터 패널 스타일
 ```
 
 ## 참고 / 주의사항
