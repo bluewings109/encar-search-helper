@@ -1,6 +1,6 @@
 // 매물 목록 카드를 찾아 상세 이력 뱃지를 주입하고, 용도변경이력 필터를 적용하는 진입점
 (() => {
-  const { api, render, filter } = window.EncarHelper;
+  const { api, render, filter, mileage } = window.EncarHelper;
   const CARID_RE = /[?&]carid=(\d+)/;
   const cards = new Map(); // anchor -> { listId, cardRoot, extras }
 
@@ -54,6 +54,7 @@
     if (!listId) return;
     const cardRoot = anchor.closest("li") || anchor;
     cards.set(anchor, { listId, cardRoot, extras: undefined });
+    mileage.render(anchor);
     observeVisibility(anchor, listId);
   }
 

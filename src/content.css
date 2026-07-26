@@ -61,6 +61,11 @@
   white-space: nowrap;
 }
 
+.eh-mileage-per-year {
+  color: #888;
+  font-size: inherit;
+}
+
 .eh-filter-row {
   display: flex;
   align-items: center;
