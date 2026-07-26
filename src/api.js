@@ -34,6 +34,11 @@ window.EncarHelper = window.EncarHelper || {};
     return res.json();
   }
 
+  /** 배열 안에 서로 다른 값이 2개 이상이면 그 항목의 값이 변경된 이력이 있다는 뜻이다. */
+  function hasVariance(arr) {
+    return Array.isArray(arr) && new Set(arr).size > 1;
+  }
+
   async function fetchVehicleExtras(listId) {
     const vehicle = await fetchJson(`${API_BASE}/v1/readside/vehicle/${listId}`);
     const vehicleId = vehicle.vehicleId;
@@ -50,8 +55,16 @@ window.EncarHelper = window.EncarHelper || {};
         ? master.detail.usageChangeTypes
         : [];
 
+    // 용도변경이력은 성능점검기록부(usageChangeTypes)뿐 아니라 보험이력의 용도 코드
+    // 변경 내역(carInfoUse1s/2s에 서로 다른 값이 남아 있는 경우, 예: 렌트→자가용)으로도
+    // 나타난다. 실제 상세페이지의 "특이 사항: 렌트 이력" 표시는 후자로만 확인되는
+    // 경우가 있어 두 소스를 모두 반영한다.
+    const usageChangedByInspection = usageChangeTypes.length > 0;
+    const usageChangedByRecord =
+      !!record && (hasVariance(record.carInfoUse1s) || hasVariance(record.carInfoUse2s));
+
     return {
-      hasUsageChange: usageChangeTypes.length > 0,
+      hasUsageChange: !master && !record ? null : usageChangedByInspection || usageChangedByRecord,
       hasAccident: master ? Boolean(master.accdient) : null,
       hasSimpleRepair: master ? Boolean(master.simpleRepair) : null,
       myAccidentCount: record ? record.myAccidentCnt : null,

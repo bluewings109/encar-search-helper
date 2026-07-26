@@ -19,7 +19,9 @@
 
 1. `GET https://api.encar.com/v1/readside/vehicle/{listId}` — 목록의 매물 ID를 실제 `vehicleId`/`vehicleNo`로 변환
 2. `GET https://api.encar.com/v1/readside/inspection/vehicle/{vehicleId}` — 성능점검기록부(`accdient`, `simpleRepair`, `usageChangeTypes`)
-3. `GET https://api.encar.com/v1/readside/record/vehicle/{vehicleId}/open` — 보험 사고이력(`myAccidentCnt/Cost`, `otherAccidentCnt/Cost`)
+3. `GET https://api.encar.com/v1/readside/record/vehicle/{vehicleId}/open` — 보험 사고이력(`myAccidentCnt/Cost`, `otherAccidentCnt/Cost`, `carInfoUse1s`/`carInfoUse2s`)
+
+용도변경이력은 성능점검기록부의 `usageChangeTypes`뿐 아니라 보험이력의 용도 코드 이력(`carInfoUse1s`/`carInfoUse2s`)에 서로 다른 값이 남아 있는 경우(예: 렌트용 → 자가용)도 함께 반영합니다. 실제 상세페이지의 "차량이력 · 특이 사항: 렌트 이력" 표시는 후자로만 확인되는 경우가 있기 때문입니다.
 
 이 API들은 `Access-Control-Allow-Origin: *`를 응답하므로 별도 인증이나 백엔드 없이 콘텐츠 스크립트에서 바로 호출할 수 있습니다.
 
