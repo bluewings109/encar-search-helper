@@ -1,57 +1,67 @@
+/*
+ * 엔카는 목록 유형(일반등록 표 등)에 따라 `.detail span`처럼 매우 구체적인 선택자로
+ * float/padding/background를 강제하는 CSS를 갖고 있다. 클래스 선택자 하나만으로는
+ * 그런 규칙을 이길 수 없으므로, 뱃지 관련 시각 속성은 !important로 확정한다.
+ */
 .eh-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 6px;
-  width: 100%;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: 6px !important;
+  width: 100% !important;
+  float: none !important;
 }
 
 .eh-badges--loading,
 .eh-badges--error {
-  font-size: 11px;
-  color: #999;
+  font-size: 11px !important;
+  color: #999 !important;
 }
 
 .eh-badges--error {
-  color: #c0392b;
+  color: #c0392b !important;
 }
 
 .eh-badge {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.6;
-  white-space: nowrap;
+  display: inline-block !important;
+  padding: 2px 6px !important;
+  margin: 0 !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.6 !important;
+  white-space: nowrap !important;
+  float: none !important;
+  background-image: none !important;
 }
 
 .eh-badge--no {
-  background: #eef7ee;
-  color: #2e7d32;
+  background-color: #eef7ee !important;
+  color: #2e7d32 !important;
 }
 
 .eh-badge--yes {
-  background: #fdecea;
-  color: #c0392b;
+  background-color: #fdecea !important;
+  color: #c0392b !important;
 }
 
 .eh-badge--unknown {
-  background: #f2f2f2;
-  color: #888;
+  background-color: #f2f2f2 !important;
+  color: #888 !important;
 }
 
 .eh-badge--info {
-  background: #eef2fb;
-  color: #2c5cc5;
+  background-color: #eef2fb !important;
+  color: #2c5cc5 !important;
 }
 
 .eh-mileage-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
-  width: 100%;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: 4px !important;
+  width: 100% !important;
+  float: none !important;
 }
 
 .eh-filter-panel {
