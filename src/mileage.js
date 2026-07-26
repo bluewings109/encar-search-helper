@@ -1,4 +1,4 @@
-// 연식/주행거리 텍스트를 파싱해 "연간 주행거리"를 계산·표시 (API 호출 불필요)
+// 연식/주행거리 텍스트를 파싱해 "차량 경과기간"과 "연간 주행거리"를 계산·표시 (API 호출 불필요)
 window.EncarHelper = window.EncarHelper || {};
 
 (() => {
@@ -25,24 +25,40 @@ window.EncarHelper = window.EncarHelper || {};
     return Math.max(months, 1);
   }
 
+  function formatAge(months) {
+    const years = Math.floor(months / 12);
+    const remainMonths = months % 12;
+    if (years === 0) return `${remainMonths}개월차`;
+    if (remainMonths === 0) return `${years}년차`;
+    return `${years}년 ${remainMonths}개월차`;
+  }
+
   function render(anchor) {
     const detail = anchor.querySelector(".detail");
-    if (!detail || detail.querySelector(".eh-mileage-per-year")) return;
+    if (!detail || detail.querySelector(".eh-vehicle-age")) return;
 
     const yerEl = detail.querySelector(".yer");
     const kmEl = detail.querySelector(".km");
     if (!yerEl || !kmEl) return;
 
     const yearMonth = parseYearMonth(yerEl.textContent);
+    if (!yearMonth) return;
+
+    const months = ageInMonths(yearMonth.year, yearMonth.month);
+
+    const ageSpan = document.createElement("span");
+    ageSpan.className = "eh-vehicle-age";
+    ageSpan.textContent = `· ${formatAge(months)}`;
+    yerEl.insertAdjacentElement("afterend", ageSpan);
+
     const mileage = parseMileage(kmEl.textContent);
-    if (!yearMonth || mileage === null) return;
+    if (mileage === null) return;
 
-    const perYear = Math.round((mileage * 12) / ageInMonths(yearMonth.year, yearMonth.month));
-
-    const span = document.createElement("span");
-    span.className = "eh-mileage-per-year";
-    span.textContent = `· 연 ${perYear.toLocaleString("ko-KR")}km`;
-    kmEl.insertAdjacentElement("afterend", span);
+    const perYear = Math.round((mileage * 12) / months);
+    const kmSpan = document.createElement("span");
+    kmSpan.className = "eh-mileage-per-year";
+    kmSpan.textContent = `· 연 ${perYear.toLocaleString("ko-KR")}km`;
+    kmEl.insertAdjacentElement("afterend", kmSpan);
   }
 
   window.EncarHelper.mileage = { render };
