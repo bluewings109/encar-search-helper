@@ -33,32 +33,39 @@ window.EncarHelper = window.EncarHelper || {};
     return `${years}년 ${remainMonths}개월차`;
   }
 
-  function render(anchor) {
-    const detail = anchor.querySelector(".detail");
-    if (!detail || detail.querySelector(".eh-vehicle-age")) return;
+  function buildBadge(text) {
+    const span = document.createElement("span");
+    span.className = "eh-badge eh-badge--info";
+    span.textContent = text;
+    return span;
+  }
 
-    const yerEl = detail.querySelector(".yer");
-    const kmEl = detail.querySelector(".km");
-    if (!yerEl || !kmEl) return;
+  // 기존 "yer · km · 연료 · 지역" 한 줄 안에 인라인으로 끼워 넣으면 그 줄의 폭 제약 때문에
+  // 잘리거나 눈에 띄지 않을 수 있어, 사고이력 뱃지들과 같은 방식(자체 flex 줄)으로 표시한다.
+  function render(anchor) {
+    const mount = anchor.querySelector(".detail") || anchor;
+    if (mount.querySelector(".eh-mileage-badges")) return;
+
+    const yerEl = mount.querySelector(".yer");
+    if (!yerEl) return;
 
     const yearMonth = parseYearMonth(yerEl.textContent);
     if (!yearMonth) return;
 
     const months = ageInMonths(yearMonth.year, yearMonth.month);
 
-    const ageSpan = document.createElement("span");
-    ageSpan.className = "eh-vehicle-age";
-    ageSpan.textContent = `· ${formatAge(months)}`;
-    yerEl.insertAdjacentElement("afterend", ageSpan);
+    const container = document.createElement("span");
+    container.className = "eh-mileage-badges";
+    container.appendChild(buildBadge(formatAge(months)));
 
-    const mileage = parseMileage(kmEl.textContent);
-    if (mileage === null) return;
+    const kmEl = mount.querySelector(".km");
+    const mileage = kmEl ? parseMileage(kmEl.textContent) : null;
+    if (mileage !== null) {
+      const perYear = Math.round((mileage * 12) / months);
+      container.appendChild(buildBadge(`연 ${perYear.toLocaleString("ko-KR")}km`));
+    }
 
-    const perYear = Math.round((mileage * 12) / months);
-    const kmSpan = document.createElement("span");
-    kmSpan.className = "eh-mileage-per-year";
-    kmSpan.textContent = `· 연 ${perYear.toLocaleString("ko-KR")}km`;
-    kmEl.insertAdjacentElement("afterend", kmSpan);
+    mount.appendChild(container);
   }
 
   window.EncarHelper.mileage = { render };

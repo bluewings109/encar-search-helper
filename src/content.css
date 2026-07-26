@@ -41,6 +41,19 @@
   color: #888;
 }
 
+.eh-badge--info {
+  background: #eef2fb;
+  color: #2c5cc5;
+}
+
+.eh-mileage-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  width: 100%;
+}
+
 .eh-filter-panel {
   position: fixed;
   top: 96px;
@@ -59,12 +72,6 @@
   font-weight: 700;
   margin-bottom: 6px;
   white-space: nowrap;
-}
-
-.eh-vehicle-age,
-.eh-mileage-per-year {
-  color: #888;
-  font-size: inherit;
 }
 
 .eh-filter-row {

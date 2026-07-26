@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "엔카 매물 목록 상세정보 표시기",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "엔카 매물 목록에서 상세페이지에서만 보이던 사고이력·보험이력·용도변경이력 정보를 바로 보여줍니다.",
   "host_permissions": [
     "https://api.encar.com/*"
