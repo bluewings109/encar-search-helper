@@ -55,6 +55,15 @@ window.EncarHelper = window.EncarHelper || {};
     return span;
   }
 
+  function depreciationBadge(rate) {
+    const state = rate === null || rate === undefined ? "unknown" : "info";
+    const text = rate === null || rate === undefined ? "정보없음" : `${rate}%`;
+    const span = document.createElement("span");
+    span.className = `eh-badge eh-badge--${state}`;
+    span.textContent = `신차대비 ${text}`;
+    return span;
+  }
+
   function buildBadgeContainer(extras) {
     const container = document.createElement("span");
     container.className = "eh-badges";
@@ -65,7 +74,8 @@ window.EncarHelper = window.EncarHelper || {};
       countCostBadge("내차피해", extras.myAccidentCount, extras.myAccidentCost),
       countCostBadge("타차가해", extras.otherAccidentCount, extras.otherAccidentCost),
       countBadge("소유자변경", extras.ownerChangeCount),
-      notJoinPeriodBadge(extras.notJoinPeriods)
+      notJoinPeriodBadge(extras.notJoinPeriods),
+      depreciationBadge(extras.depreciationRate)
     );
     return container;
   }

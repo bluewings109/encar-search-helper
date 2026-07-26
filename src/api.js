@@ -39,14 +39,37 @@ window.EncarHelper = window.EncarHelper || {};
     return Array.isArray(arr) && new Set(arr).size > 1;
   }
 
+  /**
+   * 신차대비 감가율을 계산한다. 신차가 = 차량 기본가(category.originPrice) + 선택
+   * 옵션가 합계, 감가율 = (신차가 - 현재 판매가) / 신차가 * 100. 기본가나 판매가가
+   * 없으면(수입차 등 시세표 미매칭) 계산할 수 없어 null을 반환한다.
+   */
+  function calcDepreciationRate(vehicle, optionCatalog) {
+    const originPrice = vehicle.category ? vehicle.category.originPrice : null;
+    const currentPrice = vehicle.advertisement ? vehicle.advertisement.price : null;
+    if (!originPrice || currentPrice === null || currentPrice === undefined) return null;
+
+    const selectedCodes = vehicle.options && Array.isArray(vehicle.options.choice) ? vehicle.options.choice : [];
+    const optionsTotal = Array.isArray(optionCatalog)
+      ? optionCatalog
+          .filter((option) => selectedCodes.includes(option.optionCd))
+          .reduce((sum, option) => sum + (option.price || 0), 0)
+      : 0;
+
+    const fullNewPrice = originPrice + optionsTotal;
+    if (fullNewPrice <= 0) return null;
+    return Math.round(((fullNewPrice - currentPrice) / fullNewPrice) * 1000) / 10;
+  }
+
   async function fetchVehicleExtras(listId) {
     const vehicle = await fetchJson(`${API_BASE}/v1/readside/vehicle/${listId}`);
     const vehicleId = vehicle.vehicleId;
     if (!vehicleId) throw new Error("vehicleId not found");
 
-    const [inspection, record] = await Promise.all([
+    const [inspection, record, optionCatalog] = await Promise.all([
       fetchJson(`${API_BASE}/v1/readside/inspection/vehicle/${vehicleId}`).catch(() => null),
       fetchJson(`${API_BASE}/v1/readside/record/vehicle/${vehicleId}/open`).catch(() => null),
+      fetchJson(`${API_BASE}/v1/readside/vehicles/car/${vehicleId}/options/choice`).catch(() => null),
     ]);
 
     const master = inspection && inspection.master ? inspection.master : null;
@@ -81,6 +104,7 @@ window.EncarHelper = window.EncarHelper || {};
       otherAccidentCost: record ? record.otherAccidentCost : null,
       ownerChangeCount: record ? record.ownerChangeCnt : null,
       notJoinPeriods,
+      depreciationRate: calcDepreciationRate(vehicle, optionCatalog),
     };
   }
 
