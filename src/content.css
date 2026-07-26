@@ -1,0 +1,42 @@
+.eh-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.eh-badges--loading,
+.eh-badges--error {
+  font-size: 11px;
+  color: #999;
+}
+
+.eh-badges--error {
+  color: #c0392b;
+}
+
+.eh-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.eh-badge--no {
+  background: #eef7ee;
+  color: #2e7d32;
+}
+
+.eh-badge--yes {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.eh-badge--unknown {
+  background: #f2f2f2;
+  color: #888;
+}

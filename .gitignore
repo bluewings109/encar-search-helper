@@ -1,0 +1,23 @@
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright MCP test artifacts
+.playwright-mcp/
+
+# Chrome extension packaging output
+*.crx
+*.pem
+*.zip
+
+# Node (in case tooling is added later)
+node_modules/
+npm-debug.log*
+
+# Local env/scratch files
+*.log
+.env
