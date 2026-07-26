@@ -78,6 +78,12 @@
   color: #333;
 }
 
+.eh-filter-section + .eh-filter-section {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
 .eh-filter-title {
   font-weight: 700;
   margin-bottom: 6px;

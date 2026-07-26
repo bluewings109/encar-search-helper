@@ -22,7 +22,7 @@
   function applyVisibility(anchor) {
     const card = cards.get(anchor);
     if (!card || card.extras === undefined) return;
-    const visible = filter.shouldShow(card.extras ? card.extras.hasUsageChange : null);
+    const visible = filter.shouldShow(card.extras);
     card.cardRoot.style.display = visible ? "" : "none";
   }
 
