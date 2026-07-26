@@ -41,7 +41,10 @@
     applyVisibility(anchor);
   }
 
-  function observeVisibility(anchor, listId) {
+  // anchor 자체가 아니라 cardRoot를 관찰한다. 표 형태 매물은 carid 앵커 중 하나가
+  // (이미지 토글 등의 이유로) style="display:none"일 수 있는데, display:none 요소는
+  // 레이아웃이 없어 IntersectionObserver가 절대 발동하지 않기 때문이다.
+  function observeVisibility(anchor, listId, cardRoot) {
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
@@ -49,7 +52,7 @@
         hydrateCard(anchor, listId);
       }
     });
-    observer.observe(anchor);
+    observer.observe(cardRoot);
     cards.get(anchor).observer = observer;
   }
 
@@ -65,7 +68,7 @@
     const cardRoot = findCardRoot(anchor);
     cards.set(anchor, { listId, cardRoot, extras: undefined });
     mileage.render(anchor, cardRoot);
-    observeVisibility(anchor, listId);
+    observeVisibility(anchor, listId, cardRoot);
   }
 
   function scan(root) {
