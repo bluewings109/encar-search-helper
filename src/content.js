@@ -3,7 +3,7 @@
   const { api, render, filter, mileage } = window.EncarHelper;
   const CARID_RE = /[?&]carid=(\d+)/;
   const cards = new Map(); // anchor -> { listId, cardRoot, extras }
-  const processedListIds = new Set(); // 일반등록 표는 매물 하나당 <a carid=...>가 두 개라 중복 방지
+  const processedCardRoots = new WeakSet(); // 같은 tr/li 안의 중복 <a carid=...> 방지
 
   function extractListId(anchor) {
     const href = anchor.getAttribute("href") || "";
@@ -60,12 +60,15 @@
     if (cards.has(anchor)) return;
     const listId = extractListId(anchor);
     if (!listId) return;
-    // 일반등록 표는 매물 하나(<tr>)에 carid를 가진 <a>가 두 개(썸네일용/텍스트용) 있어
-    // 뱃지가 중복 삽입되지 않도록 같은 listId는 한 번만 처리한다.
-    if (processedListIds.has(listId)) return;
-    processedListIds.add(listId);
 
     const cardRoot = findCardRoot(anchor);
+    // 일반등록 표는 매물 하나(<tr>)에 carid를 가진 <a>가 두 개(썸네일용/텍스트용) 있어
+    // 뱃지가 중복 삽입되지 않도록 같은 카드 루트는 한 번만 처리한다. listId로 전역
+    // dedup을 하면 같은 매물이 다른 섹션/행에 중복 노출될 때(엔카가 종종 그렇게 함)
+    // 정당한 다른 카드까지 건너뛰게 되므로, 반드시 cardRoot 단위로만 걸러야 한다.
+    if (processedCardRoots.has(cardRoot)) return;
+    processedCardRoots.add(cardRoot);
+
     cards.set(anchor, { listId, cardRoot, extras: undefined });
     mileage.render(anchor, cardRoot);
     observeVisibility(anchor, listId, cardRoot);
