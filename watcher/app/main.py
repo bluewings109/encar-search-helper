@@ -16,7 +16,12 @@ log = logging.getLogger(__name__)
 def _needs_detail_check(search):
     return any(
         search.get(key) is not None
-        for key in ("max_new_price_ratio", "exclude_usage_change", "exclude_simple_repair")
+        for key in (
+            "max_new_price_ratio",
+            "exclude_usage_change",
+            "exclude_simple_repair",
+            "exclude_not_join_period",
+        )
     )
 
 
@@ -30,6 +35,8 @@ def _passes_detail_filters(search, extras):
     if search.get("exclude_usage_change") and extras.get("hasUsageChange"):
         return False
     if search.get("exclude_simple_repair") and extras.get("hasSimpleRepair"):
+        return False
+    if search.get("exclude_not_join_period") and extras.get("notJoinPeriods"):
         return False
     return True
 

@@ -15,6 +15,7 @@ searches:
   - name: "G80 3천만원대"
     url: "https://www.encar.com/dc/dc_carsearchlist.do?carType=for#!%7B%22action%22%3A%22(And.Hidden.N._.(C.CarType.N._.(C.Manufacturer.제네시스._.C.ModelGroup.G80.)))%22%2C%22toggle%22%3A%7B%7D%2C%22layer%22%3A%22%22%2C%22sort%22%3A%22ModifiedDate%22%2C%22page%22%3A1%2C%22limit%22%3A20%2C%22searchKey%22%3A%22%22%2C%22loginCheck%22%3Afalse%7D"
     # 아래는 모두 선택 항목이며, 지정한 항목만 신규 매물 상세 조회 후 추가로 걸러냅니다.
-    max_new_price_ratio: 60      # 신차대비 현재가 비율이 이 값(%) 이하인 매물만 알림
-    exclude_usage_change: true   # 용도변경이력(렌트 등) 있는 매물 제외
-    exclude_simple_repair: true  # 단순수리 이력 있는 매물 제외
+    max_new_price_ratio: 60          # 신차대비 현재가 비율이 이 값(%) 이하인 매물만 알림
+    exclude_usage_change: true       # 용도변경이력(렌트 등) 있는 매물 제외
+    exclude_simple_repair: true      # 단순수리 이력 있는 매물 제외
+    exclude_not_join_period: true    # 보험이력 정보제공 불가능기간이 있는 매물 제외
