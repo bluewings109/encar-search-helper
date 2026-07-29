@@ -13,18 +13,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger(__name__)
 
 
-def _needs_detail_check(search):
-    return any(
-        search.get(key) is not None
-        for key in (
-            "max_new_price_ratio",
-            "exclude_usage_change",
-            "exclude_simple_repair",
-            "exclude_not_join_period",
-        )
-    )
-
-
 def _passes_detail_filters(search, extras):
     if extras is None:
         # 상세 조회 실패 시 필터링 없이 통과시킨다(알림을 놓치는 것보다 낫다).
@@ -57,9 +45,8 @@ def run_once(config, seen_by_search):
             continue
         log.info("검색 '%s': 신규 매물 %d건 발견", name, len(new_listings))
 
-        extras_by_id = {}
-        if _needs_detail_check(search):
-            extras_by_id = encar_client.fetch_vehicle_extras_bulk([item["Id"] for item in new_listings])
+        # 알림 메시지에 항상 상세 이력을 표시하므로 신규 매물은 전부 상세 조회한다.
+        extras_by_id = encar_client.fetch_vehicle_extras_bulk([item["Id"] for item in new_listings])
 
         for listing in new_listings:
             list_id = listing["Id"]

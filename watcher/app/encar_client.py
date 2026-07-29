@@ -1,6 +1,7 @@
-"""엔카 공개 API 호출. 목록 검색 및 매물 상세 조건(신차대비 비율, 단순수리,
-용도변경이력, 보험이력 정보제공 불가능기간) 조회. 로직은 크롬 익스텐션의
-extension/src/api.js를 그대로 포팅했다."""
+"""엔카 공개 API 호출. 목록 검색 및 매물 상세 조건(용도변경이력, 사고이력,
+단순수리, 내차피해/타차가해 횟수·금액, 소유자변경 횟수, 보험이력 정보제공
+불가능기간, 신차대비 비율) 조회. 로직은 크롬 익스텐션의 extension/src/api.js를
+그대로 포팅했다."""
 
 import json
 import logging
@@ -73,8 +74,9 @@ def _calc_new_price_ratio(vehicle, option_catalog):
 
 
 def fetch_vehicle_extras(list_id):
-    """매물 하나의 상세 조건(신차대비 비율, 단순수리, 용도변경이력, 보험이력
-    정보제공 불가능기간)을 조회한다. 실패 시 None."""
+    """매물 하나의 상세 조건(용도변경이력, 사고이력, 단순수리, 내차피해/타차가해
+    횟수·금액, 소유자변경 횟수, 보험이력 정보제공 불가능기간, 신차대비 비율)을
+    조회한다. 실패 시 None."""
     try:
         vehicle = _fetch_json(f"{API_BASE}/v1/readside/vehicle/{list_id}")
         vehicle_id = vehicle.get("vehicleId")
@@ -108,7 +110,13 @@ def fetch_vehicle_extras(list_id):
 
         return {
             "hasUsageChange": None if not master and not record else (usage_changed_by_inspection or usage_changed_by_record),
+            "hasAccident": bool(master.get("accdient")) if master else None,
             "hasSimpleRepair": bool(master.get("simpleRepair")) if master else None,
+            "myAccidentCount": record.get("myAccidentCnt") if record else None,
+            "myAccidentCost": record.get("myAccidentCost") if record else None,
+            "otherAccidentCount": record.get("otherAccidentCnt") if record else None,
+            "otherAccidentCost": record.get("otherAccidentCost") if record else None,
+            "ownerChangeCount": record.get("ownerChangeCnt") if record else None,
             "notJoinPeriods": not_join_periods,
             "newPriceRatio": _calc_new_price_ratio(vehicle, option_catalog),
         }
