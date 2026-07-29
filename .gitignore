@@ -21,3 +21,8 @@ npm-debug.log*
 # Local env/scratch files
 *.log
 .env
+
+# Python (watcher add-on)
+__pycache__/
+*.pyc
+

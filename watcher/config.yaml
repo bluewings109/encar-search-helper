@@ -1,0 +1,11 @@
+name: 엔카 매물 알림 워처
+version: "0.1.0"
+slug: encar_watcher
+description: 원하는 조건의 엔카 신규 매물을 텔레그램으로 알려줍니다. 검색 조건은 /share/encar_watcher/config.yaml 파일로 직접 설정합니다.
+arch:
+  - aarch64
+  - amd64
+  - armv7
+map:
+  - share:rw
+  - data:rw
