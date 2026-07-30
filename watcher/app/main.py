@@ -42,8 +42,9 @@ def run_once(config, seen_by_search):
 
         new_listings = [item for item in listings if item.get("Id") and item["Id"] not in seen]
         if not new_listings:
+            log.info("검색 '%s': 확인 완료(전체 %d건), 신규 0건", name, len(listings))
             continue
-        log.info("검색 '%s': 신규 매물 %d건 발견", name, len(new_listings))
+        log.info("검색 '%s': 신규 매물 %d건 발견(전체 %d건)", name, len(new_listings), len(listings))
 
         # 알림 메시지에 항상 상세 이력을 표시하므로 신규 매물은 전부 상세 조회한다.
         extras_by_id = encar_client.fetch_vehicle_extras_bulk([item["Id"] for item in new_listings])
