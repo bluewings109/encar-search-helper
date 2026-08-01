@@ -7,7 +7,7 @@ import json
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote, unquote, urlparse, parse_qs
-from urllib.request import Request, urlopen
+from urllib.request import Request, ProxyHandler, build_opener
 
 API_BASE = "https://api.encar.com"
 LIST_BASE = "https://www.encar.com/dc/dc_cardetailview.do"
@@ -17,10 +17,15 @@ LIST_PAGE_SIZE = 50
 
 log = logging.getLogger(__name__)
 
+# 컨테이너 환경변수(HTTP_PROXY 등)로 주입된 프록시를 무시하고 항상 직접 연결한다.
+# encar API는 프록시를 거칠 이유가 없고, 인증이 필요한 프록시를 자동으로 타면
+# 407 Proxy Authentication Required로 실패한다.
+_opener = build_opener(ProxyHandler({}))
+
 
 def _fetch_json(url):
     req = Request(url, headers={"Accept": "application/json", "User-Agent": USER_AGENT})
-    with urlopen(req, timeout=10) as res:
+    with _opener.open(req, timeout=10) as res:
         return json.loads(res.read().decode("utf-8"))
 
 
