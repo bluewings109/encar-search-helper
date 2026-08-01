@@ -6,7 +6,7 @@
 import json
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlparse, parse_qs
 from urllib.request import Request, urlopen
 
 API_BASE = "https://api.encar.com"
@@ -25,16 +25,28 @@ def _fetch_json(url):
 
 
 def parse_search_url(url):
-    """encar.com에서 필터링 후 복사한 검색결과 URL에서 목록 API 호출에 필요한
-    action(query DSL)과 sort를 추출한다. URL의 `#!{...}` 프래그먼트가 JSON이다."""
-    if "#!" not in url:
-        raise ValueError("검색 URL에 '#!' 프래그먼트가 없습니다. encar.com에서 필터를 적용한 뒤 주소창 URL을 복사했는지 확인하세요.")
-    fragment = url.split("#!", 1)[1]
-    data = json.loads(unquote(fragment))
+    """encar.com(PC)/car.encar.com(모바일)에서 필터링 후 복사한 검색결과 URL에서
+    목록 API 호출에 필요한 action(query DSL)과 sort를 추출한다.
+    PC는 `#!{...}` 프래그먼트, 모바일은 `?search={...}` 쿼리 파라미터에 같은 구조의
+    JSON이 들어있다."""
+    if "#!" in url:
+        fragment = url.split("#!", 1)[1]
+        data = json.loads(unquote(fragment))
+    else:
+        query = parse_qs(urlparse(url).query)
+        search_param = query.get("search")
+        if not search_param:
+            raise ValueError(
+                "검색 URL에서 조건을 찾을 수 없습니다. encar.com(PC) 또는 "
+                "차량 검색 결과 화면(모바일)에서 필터를 적용한 뒤 주소창 URL을 복사했는지 확인하세요."
+            )
+        data = json.loads(search_param[0])
     action = data.get("action")
     if not action:
         raise ValueError("검색 URL에서 action 조건을 찾을 수 없습니다.")
     sort = data.get("sort", "ModifiedDate")
+    if sort.startswith("Mobile"):
+        sort = sort[len("Mobile"):]
     return action, sort
 
 
