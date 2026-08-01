@@ -11,7 +11,17 @@ from urllib.request import Request, ProxyHandler, build_opener
 
 API_BASE = "https://api.encar.com"
 LIST_BASE = "https://www.encar.com/dc/dc_cardetailview.do"
-USER_AGENT = "Mozilla/5.0 (encar-watcher)"
+SITE_ORIGIN = "https://www.encar.com"
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+)
+REQUEST_HEADERS = {
+    "Accept": "application/json",
+    "User-Agent": USER_AGENT,
+    "Origin": SITE_ORIGIN,
+    "Referer": f"{SITE_ORIGIN}/",
+}
 MAX_CONCURRENT_DETAIL_REQUESTS = 4
 LIST_PAGE_SIZE = 50
 
@@ -24,7 +34,7 @@ _opener = build_opener(ProxyHandler({}))
 
 
 def _fetch_json(url):
-    req = Request(url, headers={"Accept": "application/json", "User-Agent": USER_AGENT})
+    req = Request(url, headers=REQUEST_HEADERS)
     with _opener.open(req, timeout=10) as res:
         return json.loads(res.read().decode("utf-8"))
 
