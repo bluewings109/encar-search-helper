@@ -12,6 +12,10 @@ from state import load_seen, save_seen
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
+# 검색 항목을 한꺼번에 몰아서 호출하면 encar 쪽 요청 속도 제한(rate limit)에
+# 걸릴 수 있어, 검색 항목 사이에 텀을 둔다.
+SEARCH_REQUEST_DELAY_SEC = 2
+
 
 def _passes_detail_filters(search, extras):
     if extras is None:
@@ -30,7 +34,9 @@ def _passes_detail_filters(search, extras):
 
 
 def run_once(config, seen_by_search):
-    for search in config["searches"]:
+    for i, search in enumerate(config["searches"]):
+        if i > 0:
+            time.sleep(SEARCH_REQUEST_DELAY_SEC)
         name = search["name"]
         seen = seen_by_search.setdefault(name, set())
         try:
