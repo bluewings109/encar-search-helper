@@ -1,11 +1,28 @@
 name: 엔카 매물 알림 워처
-version: "0.1.0"
+version: "0.2.0"
 slug: encar_watcher
-description: 원하는 조건의 엔카 신규 매물을 텔레그램으로 알려줍니다. 검색 조건은 /share/encar_watcher/config.yaml 파일로 직접 설정합니다.
+description: 원하는 조건의 엔카 신규 매물을 텔레그램으로 알려줍니다. 검색 조건은 애드온 설정(구성) 화면에서 지정합니다.
 arch:
   - aarch64
   - amd64
   - armv7
 map:
-  - share:rw
   - data:rw
+options:
+  telegram:
+    bot_token: ""
+    chat_id: ""
+  poll_interval_sec: 300
+  searches: []
+schema:
+  telegram:
+    bot_token: password
+    chat_id: str
+  poll_interval_sec: "int(60,)"
+  searches:
+    - name: str
+      url: str
+      max_new_price_ratio: "int(0,100)?"
+      exclude_usage_change: "bool?"
+      exclude_simple_repair: "bool?"
+      exclude_not_join_period: "bool?"

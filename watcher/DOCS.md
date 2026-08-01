@@ -1,13 +1,16 @@
 # 엔카 매물 알림 워처
 
-이 애드온은 add-on 설정 UI에 옵션을 두지 않습니다. 모든 설정은 `/share/encar_watcher/config.yaml` 파일 하나로 합니다.
+모든 설정은 애드온의 **구성(Configuration)** 탭에서 합니다. 별도 파일 편집이 필요 없습니다.
 
 ## 설정 방법
 
-1. `/share/encar_watcher/config.yaml` 파일을 만듭니다(같이 배포된 `config.example.yaml`을 복사해서 시작하세요). `/share` 폴더는 Samba, File editor 애드온 등으로 접근할 수 있습니다.
-2. `telegram.bot_token`, `telegram.chat_id`를 채웁니다. 텔레그램 봇 만드는 법은 [README.md](README.md)를 참고하세요.
-3. `searches` 아래에 감시하고 싶은 조건을 추가합니다. `url`은 encar.com에서 원하는 조건(제조사/모델/가격/연식/주행거리 등)으로 검색한 뒤 **브라우저 주소창의 URL을 그대로 복사**해서 붙여넣으면 됩니다.
-4. 애드온을 시작(재시작)하면 `poll_interval_sec` 주기로 신규 매물을 확인해 텔레그램으로 알려줍니다.
+1. 애드온 **구성** 탭에서 `telegram.bot_token`, `telegram.chat_id`를 채웁니다. 텔레그램 봇 만드는 법은 [README.md](README.md)를 참고하세요.
+2. `searches` 목록에 감시하고 싶은 조건을 추가합니다.
+   - `name`: 텔레그램 알림 메시지에 표시할 이름
+   - `url`: encar.com(PC) 또는 모바일 웹(car.encar.com)에서 원하는 조건(제조사/모델/가격/연식/주행거리 등)으로 검색한 뒤 **브라우저 주소창의 URL을 그대로 복사**해서 붙여넣습니다.
+   - `max_new_price_ratio`, `exclude_usage_change`, `exclude_simple_repair`, `exclude_not_join_period`는 선택 항목이며, 지정한 항목만 신규 매물 상세 조회 후 추가로 걸러냅니다.
+3. `poll_interval_sec`(기본 300초)로 폴링 주기를 조정합니다. encar 서버 부담을 고려해 60초 미만은 설정할 수 없습니다.
+4. 애드온을 시작(재시작)하면 설정한 주기로 신규 매물을 확인해 텔레그램으로 알려줍니다.
 
 ## 로그
 
